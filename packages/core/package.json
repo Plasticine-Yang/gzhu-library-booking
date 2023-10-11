@@ -1,0 +1,27 @@
+{
+  "name": "@gzhu-library-booking/core",
+  "version": "0.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup --dts",
+    "lint": "eslint src --fix",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "puppeteer": "^21.3.8"
+  }
+}
