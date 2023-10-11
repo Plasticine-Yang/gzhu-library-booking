@@ -8,6 +8,7 @@ export enum LoginErrorPhase {
   TypeUsername = 'TypeUsername',
   TypePassword = 'TypePassword',
   ClickLoginButton = 'ClickLoginButton',
+  Login = 'Login',
   GetCookies = 'GetCookies',
   GetLoginSuccessCookieValue = 'GetLoginSuccessCookieValue',
 }
