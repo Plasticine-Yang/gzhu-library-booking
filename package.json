@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "turbo dev --filter=./packages/*",
     "build": "turbo build --filter=./packages/*",
-    "play": "turbo dev --filer=./apps/playground",
+    "play": "pnpm -C apps/playground start",
     "test": "vitest",
     "test:u": "vitest -u",
     "commit": "cz",

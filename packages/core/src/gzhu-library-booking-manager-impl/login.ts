@@ -6,13 +6,17 @@ import { LoginError } from '@/errors'
 import type { LoginResult } from '@/types'
 import { PerformanceImpl } from '@/performance-impl'
 
+const GZHU_LIBRARY_BOOKING_OPEN_BROWSER = process.env.GZHU_LIBRARY_BOOKING_OPEN_BROWSER === 'true' ? true : false
+
 async function internalLogin(username: string, password: string): Promise<LoginResult> {
   const performanceImpl = new PerformanceImpl()
   performanceImpl.start()
 
-  const browser = await puppeteer.launch({ headless: 'new' }).catch((reason) => {
-    throw new LoginError('puppeteer 启动失败', { cause: reason, phase: LoginErrorPhase.Launch })
-  })
+  const browser = await puppeteer
+    .launch({ headless: GZHU_LIBRARY_BOOKING_OPEN_BROWSER ? false : 'new' })
+    .catch((reason) => {
+      throw new LoginError('puppeteer 启动失败', { cause: reason, phase: LoginErrorPhase.Launch })
+    })
 
   try {
     const page = await browser.newPage().catch((reason) => {
