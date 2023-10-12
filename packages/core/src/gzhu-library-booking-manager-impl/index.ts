@@ -1,4 +1,4 @@
-import { GET_ROOM_MENU_URL } from '@/constants'
+import { GET_ROOM_MENU_URL, GET_SEAT_MENU_URL } from '@/constants'
 import { request } from '@/helpers'
 import type {
   CommonResponse,
@@ -6,6 +6,7 @@ import type {
   GZHULibraryBookingManagerOptions,
   LoginResult,
   RoomMenu,
+  SeatMenu,
 } from '@/types'
 
 import { internalLogin } from './login'
@@ -27,6 +28,12 @@ class GZHULibraryBookingManagerImpl implements GZHULibraryBookingManager {
 
   public async getRoomMenu(): Promise<RoomMenu> {
     const response = await request.get<CommonResponse<RoomMenu>>(GET_ROOM_MENU_URL)
+
+    return response.data.data
+  }
+
+  public async getSeatMenu(): Promise<SeatMenu> {
+    const response = await request.get<CommonResponse<SeatMenu>>(GET_SEAT_MENU_URL)
 
     return response.data.data
   }
