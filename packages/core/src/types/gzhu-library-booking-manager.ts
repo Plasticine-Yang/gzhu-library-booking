@@ -1,4 +1,13 @@
-import type { GetRoomListRequestBody, ReserveRequestBody, RoomList, RoomMenu, SeatMenu } from './DTO'
+import type {
+  GetMemberInfoRequestBody,
+  GetRoomListRequestBody,
+  MemberInfo,
+  ReserveRequestBody,
+  RoomList,
+  RoomMenu,
+  SeatMenu,
+} from './DTO'
+import { MemberInfoList } from './DTO'
 import type { LoginResult } from './login'
 
 export interface GZHULibraryBookingManager {
@@ -16,6 +25,12 @@ export interface GZHULibraryBookingManager {
 
   /** 获取房间列表 */
   getRoomList(requestBody: GetRoomListRequestBody): Promise<RoomList>
+
+  /** 获取人员信息列表 */
+  getMemberInfoList(requestBody: GetMemberInfoRequestBody): Promise<MemberInfoList>
+
+  /** 获取人员信息 - 是对 getMemberInfoList 的简化，取出第一个元素返回，建议使用学号进行搜索确保唯一性 */
+  getMemberInfo(key: string): Promise<MemberInfo | null>
 
   /** 预约 */
   reserve(requestBody: ReserveRequestBody): Promise<null>

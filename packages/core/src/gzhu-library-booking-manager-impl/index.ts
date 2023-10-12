@@ -1,11 +1,20 @@
-import { GET_ROOM_LIST_URL, GET_ROOM_MENU_URL, GET_SEAT_MENU_URL, RESERVE_URL } from '@/constants'
+import {
+  GET_MEMBER_INFO_LIST_URL,
+  GET_ROOM_LIST_URL,
+  GET_ROOM_MENU_URL,
+  GET_SEAT_MENU_URL,
+  RESERVE_URL,
+} from '@/constants'
 import { request } from '@/helpers'
 import type {
   CommonResponse,
   GZHULibraryBookingManager,
   GZHULibraryBookingManagerOptions,
+  GetMemberInfoRequestBody,
   GetRoomListRequestBody,
   LoginResult,
+  MemberInfo,
+  MemberInfoList,
   ReserveRequestBody,
   RoomList,
   RoomMenu,
@@ -45,6 +54,25 @@ class GZHULibraryBookingManagerImpl implements GZHULibraryBookingManager {
     const response = await request.get<CommonResponse<RoomList>>(GET_ROOM_LIST_URL, { params: requestBody })
 
     return response.data.data
+  }
+
+  public async getMemberInfoList(requestBody: Partial<GetMemberInfoRequestBody>): Promise<MemberInfoList> {
+    const response = await request.get<CommonResponse<MemberInfoList>>(GET_MEMBER_INFO_LIST_URL, {
+      params: {
+        key: requestBody.key,
+        page: requestBody.page ?? 1,
+        pageNum: requestBody.pageNum ?? 20,
+      } as GetMemberInfoRequestBody,
+    })
+
+    return response.data.data
+  }
+
+  public async getMemberInfo(key: string): Promise<MemberInfo | null> {
+    const memberInfoList = await this.getMemberInfoList({ key })
+    const targetMember = memberInfoList.at(0)
+
+    return targetMember ?? null
   }
 
   public async reserve(requestBody: ReserveRequestBody): Promise<null> {

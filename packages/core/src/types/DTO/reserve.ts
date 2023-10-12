@@ -2,7 +2,7 @@ export interface ReserveRequestBody {
   /** 可为空数组 */
   addServices: string[]
 
-  /** 预约发起人的 id - 可通过 getMember 接口获取 memberId 作为该参数 */
+  /** 预约发起人的 id - 可通过 getMember 接口获取 accNo 作为该参数 */
   appAccNo: number
 
   /** 可为空字符串 */
@@ -29,7 +29,7 @@ export interface ReserveRequestBody {
   /** 使用 2 */
   resvKind: number
 
-  /** 预约人的 id - 可通过 getMember 接口获取 memberId 作为该参数 */
+  /** 预约人的 id - 可通过 getMember 接口获取 accNo 作为该参数 */
   resvMember: number[]
 
   /** 使用 0 */

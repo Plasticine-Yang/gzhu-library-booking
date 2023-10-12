@@ -1,4 +1,5 @@
 export * from './common-response'
+export * from './member'
 export * from './reserve'
 export * from './room-list'
 export * from './room-menu'
