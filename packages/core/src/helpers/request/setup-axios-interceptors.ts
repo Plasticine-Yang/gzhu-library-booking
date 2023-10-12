@@ -8,7 +8,11 @@ function setupAxiosInterceptors(axiosInstance: AxiosInstance) {
     const code = commonResponse.code
 
     if (code) {
-      throw new ResponseCodeError(commonResponse)
+      throw new ResponseCodeError({
+        commonResponse,
+        method: response.config.method,
+        url: response.config.url,
+      })
     }
 
     return response
