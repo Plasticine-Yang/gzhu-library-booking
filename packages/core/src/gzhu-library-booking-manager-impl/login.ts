@@ -4,8 +4,12 @@ import { GZHU_LIBRARY_BOOKING_SYSTEM_URL, LOGIN_SUCCESS_COOKIE_NAME, LOGIN_URL }
 import { LoginErrorPhase } from '@/enums'
 import { LoginError } from '@/errors'
 import type { LoginResult } from '@/types'
+import { PerformanceImpl } from '@/performance-impl'
 
 async function internalLogin(username: string, password: string): Promise<LoginResult> {
+  const performanceImpl = new PerformanceImpl()
+  performanceImpl.start()
+
   const browser = await puppeteer.launch({ headless: 'new' }).catch((reason) => {
     throw new LoginError('puppeteer 启动失败', { cause: reason, phase: LoginErrorPhase.Launch })
   })
@@ -89,23 +93,26 @@ async function internalLogin(username: string, password: string): Promise<LoginR
         })
       })
 
-      const loginSuccessCookieValue = cookies.find((cookie) => cookie.name === LOGIN_SUCCESS_COOKIE_NAME)?.value ?? ''
+      const cookieValue = cookies.find((cookie) => cookie.name === LOGIN_SUCCESS_COOKIE_NAME)?.value ?? ''
 
-      if (loginSuccessCookieValue === '') {
+      if (cookieValue === '') {
         throw new LoginError(
           `登陆成功后返回的 cookies 中没有 ${LOGIN_SUCCESS_COOKIE_NAME} 对应的值，请排查图书馆预约系统的 cookie name 是否发生变化`,
-          { phase: LoginErrorPhase.GetCookies },
+          { phase: LoginErrorPhase.GetCookies, cause: { cookies } },
         )
       }
 
+      performanceImpl.stop()
+
       return {
-        loginSuccessCookieValue,
+        cookieValue,
+        duration: performanceImpl.getDuration(),
       }
     } else {
       // 其他响应码，登录状态无法确定
       throw new LoginError('无法确定登录状态，请检查网络连接和登录请求', {
         phase: LoginErrorPhase.Login,
-        cause: { description: '登录接口 HTTP 状态码', responseStatus },
+        cause: { responseStatus },
       })
     }
   } finally {

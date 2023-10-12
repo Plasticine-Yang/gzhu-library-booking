@@ -5,7 +5,8 @@ const password = process.env.GZHU_PASSWORD
 
 if (username && password) {
   const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl()
-  const { loginSuccessCookieValue } = await gzhuLibraryBookingManagerImpl.login(username, password)
+  const { cookieValue, duration } = await gzhuLibraryBookingManagerImpl.login(username, password)
 
-  console.log(loginSuccessCookieValue)
+  console.log(cookieValue)
+  console.log(duration)
 }
