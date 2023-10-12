@@ -5,7 +5,6 @@ import { DatabaseModule } from './common/database'
 
 import { configModuleOptions } from './common/use-yaml-config'
 import { ApisCodeModule } from './modules/api-codes/api-codes.module'
-import { PostModule } from './modules/post/post.module'
 import { UserModule } from './modules/user/user.module'
 
 @Module({
@@ -28,7 +27,6 @@ import { UserModule } from './modules/user/user.module'
 
     // ============== business modules ==============
     ApisCodeModule,
-    PostModule,
     UserModule,
   ],
 })
