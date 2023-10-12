@@ -76,7 +76,22 @@ class GZHULibraryBookingManagerImpl implements GZHULibraryBookingManager {
   }
 
   public async reserve(requestBody: ReserveRequestBody): Promise<null> {
-    const response = await request.post<CommonResponse<null>>(RESERVE_URL, requestBody)
+    const response = await request.post<CommonResponse<null>>(RESERVE_URL, {
+      appAccNo: requestBody.appAccNo,
+      resvMember: requestBody.resvMember,
+      resvDev: requestBody.resvDev,
+      resvBeginTime: requestBody.resvBeginTime,
+      resvEndTime: requestBody.resvEndTime,
+      addServices: requestBody.addServices ?? [],
+      appUrl: requestBody.appUrl ?? '',
+      captcha: requestBody.captcha ?? '',
+      memberKind: requestBody.memberKind ?? 1,
+      memo: requestBody.memo ?? '',
+      resvKind: requestBody.resvKind ?? 2,
+      resvProperty: requestBody.resvProperty ?? 0,
+      sysKind: requestBody.sysKind ?? 1,
+      testName: requestBody.testName ?? '学习',
+    } as ReserveRequestBody)
 
     return response.data.data
   }

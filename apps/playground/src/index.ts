@@ -1,4 +1,4 @@
-import { GZHULibraryBookingManagerImpl } from '@gzhu-library-booking/core'
+import { GZHULibraryBookingManagerImpl, ResponseCodeError } from '@gzhu-library-booking/core'
 import { readFile, writeFile } from 'fs/promises'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
@@ -24,8 +24,11 @@ try {
   }
 } catch (error) {
   console.log('login2', error)
-  await login()
-  await consume()
+  // 未登录
+  if ((error as ResponseCodeError).code === 300) {
+    await login()
+    await consume()
+  }
 }
 
 async function login() {
@@ -56,12 +59,33 @@ async function consume() {
   // console.log('='.repeat(30), '座位菜单', '='.repeat(30))
   // console.log(seatMenu)
 
-  const roomList = await gzhuLibraryBookingManagerImpl.getRoomList({
-    labIds: '101497594',
-    sysKind: 1,
-    resvDates: '20231012',
-  })
+  const labId = roomMenu
+    .find((room) => room.name.includes('大学城'))
+    ?.children.find((child) => child.name.includes('图书馆一楼'))?.id
 
-  console.log('='.repeat(30), '房间列表', '='.repeat(30))
-  console.log(JSON.stringify(roomList, null, 2))
+  if (labId) {
+    const roomList = await gzhuLibraryBookingManagerImpl.getRoomList({
+      labIds: labId,
+      sysKind: 1,
+      resvDates: '20231012',
+    })
+
+    console.log('='.repeat(30), '房间列表', '='.repeat(30))
+    console.log(JSON.stringify(roomList, null, 2))
+
+    const memberInfo = await gzhuLibraryBookingManagerImpl.getMemberInfo('学号或姓名')
+
+    console.log('='.repeat(30), '人员信息', '='.repeat(30))
+    console.log(JSON.stringify(memberInfo, null, 2))
+
+    if (roomList.at(0)?.devId && memberInfo?.accNo) {
+      await gzhuLibraryBookingManagerImpl.reserve({
+        appAccNo: memberInfo.accNo,
+        resvBeginTime: '2023-10-14 08:30:00',
+        resvDev: [roomList.at(0)!.devId],
+        resvEndTime: '2023-10-14 12:00:00',
+        resvMember: [memberInfo.accNo],
+      })
+    }
+  }
 }

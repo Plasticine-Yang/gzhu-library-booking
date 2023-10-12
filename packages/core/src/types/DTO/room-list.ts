@@ -111,6 +111,6 @@ export interface GetRoomListRequestBody {
   /** 暂时未知用处 - 暂定为 1 */
   sysKind: number
 
-  /** 区域 id - 比如图书馆一楼 or 五楼 */
-  labIds: string
+  /** getRoomMenu 获取到的 labId - 比如图书馆一楼 or 五楼 */
+  labIds: number
 }
