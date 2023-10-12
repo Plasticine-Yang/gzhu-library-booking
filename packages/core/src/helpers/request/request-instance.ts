@@ -1,15 +1,25 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { setupAxiosInterceptors } from './setup-axios-interceptors'
+import { LOGIN_SUCCESS_COOKIE_NAME } from '@/constants'
 
 class RequestInstance {
   private axiosInstance: AxiosInstance
   private loginSuccessCookieValue: string
 
   constructor() {
-    this.axiosInstance = axios.create()
+    this.axiosInstance = axios.create({
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36',
+      },
+    })
     this.loginSuccessCookieValue = ''
 
     setupAxiosInterceptors(this.axiosInstance)
+  }
+
+  private getResolvedLoginCookieValue() {
+    return `${LOGIN_SUCCESS_COOKIE_NAME}=${this.loginSuccessCookieValue}`
   }
 
   public setLoginSuccessCookieValue(cookieValue: string) {
@@ -23,7 +33,7 @@ class RequestInstance {
 
     return this.axiosInstance.get<ResponseBody>(url, {
       ...config,
-      headers: { Cookie: this.loginSuccessCookieValue, ...config?.headers },
+      headers: { Cookie: this.getResolvedLoginCookieValue(), ...config?.headers },
     })
   }
 
@@ -34,7 +44,7 @@ class RequestInstance {
 
     return this.axiosInstance.post<ResponseBody, AxiosResponse<ResponseBody>, RequestBody>(url, data, {
       ...config,
-      headers: { Cookie: this.loginSuccessCookieValue, ...config?.headers },
+      headers: { Cookie: this.getResolvedLoginCookieValue(), ...config?.headers },
     })
   }
 }

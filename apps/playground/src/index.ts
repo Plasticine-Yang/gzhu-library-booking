@@ -50,9 +50,18 @@ async function login() {
 async function consume() {
   const roomMenu = await gzhuLibraryBookingManagerImpl.getRoomMenu()
   console.log('='.repeat(30), '房间菜单', '='.repeat(30))
-  console.log(roomMenu)
+  console.log(JSON.stringify(roomMenu, null, 2))
 
-  const seatMenu = await gzhuLibraryBookingManagerImpl.getSeatMenu()
-  console.log('='.repeat(30), '座位菜单', '='.repeat(30))
-  console.log(seatMenu)
+  // const seatMenu = await gzhuLibraryBookingManagerImpl.getSeatMenu()
+  // console.log('='.repeat(30), '座位菜单', '='.repeat(30))
+  // console.log(seatMenu)
+
+  const roomList = await gzhuLibraryBookingManagerImpl.getRoomList({
+    labIds: '101497594',
+    sysKind: 1,
+    resvDates: '20231012',
+  })
+
+  console.log('='.repeat(30), '房间列表', '='.repeat(30))
+  console.log(JSON.stringify(roomList, null, 2))
 }

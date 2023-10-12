@@ -1,4 +1,4 @@
-import type { RoomMenu, SeatMenu } from './DTO'
+import type { GetRoomListRequestBody, RoomList, RoomMenu, SeatMenu } from './DTO'
 import type { LoginResult } from './login'
 
 export interface GZHULibraryBookingManager {
@@ -13,6 +13,9 @@ export interface GZHULibraryBookingManager {
 
   /** 获取座位菜单 */
   getSeatMenu(): Promise<SeatMenu>
+
+  /** 获取房间列表 */
+  getRoomList(requestBody: GetRoomListRequestBody): Promise<RoomList>
 }
 
 export interface GZHULibraryBookingManagerOptions {}
