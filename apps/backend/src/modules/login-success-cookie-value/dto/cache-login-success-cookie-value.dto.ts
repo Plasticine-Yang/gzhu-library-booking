@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
-export class CreateLoginSuccessCookieValueDto {
+export class CacheLoginSuccessCookieValueDto {
   @IsNumber()
   @IsNotEmpty()
   userId: number

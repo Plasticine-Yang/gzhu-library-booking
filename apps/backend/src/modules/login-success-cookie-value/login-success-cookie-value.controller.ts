@@ -1,17 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 
-import { CreateLoginSuccessCookieValueDto } from './dto/create-login-success-cookie-value.dto'
-import { UpdateLoginSuccessCookieValueDto } from './dto/update-login-success-cookie-value.dto'
+import { CacheLoginSuccessCookieValueDto } from './dto/cache-login-success-cookie-value.dto'
+import { LoginGZHULibraryBookingSystemValueDto } from './dto/login-gzhu-library-booking-system-value.dto'
 import { LoginSuccessCookieValueService } from './login-success-cookie-value.service'
 
 @Controller('login-success-cookie-value')
 export class LoginSuccessCookieValueController {
   constructor(private readonly loginSuccessCookieValueService: LoginSuccessCookieValueService) {}
-
-  @Post()
-  create(@Body() createLoginSuccessCookieValueDto: CreateLoginSuccessCookieValueDto) {
-    return this.loginSuccessCookieValueService.create(createLoginSuccessCookieValueDto)
-  }
 
   @Get(':userId')
   async findOneByUserId(@Param('userId') userId: string) {
@@ -20,8 +15,15 @@ export class LoginSuccessCookieValueController {
     return loginSuccessCookieValue?.value ?? null
   }
 
-  @Patch(':userId')
-  update(@Param('userId') userId: string, @Body() updateLoginSuccessCookieValueDto: UpdateLoginSuccessCookieValueDto) {
-    return this.loginSuccessCookieValueService.update(+userId, updateLoginSuccessCookieValueDto)
+  @Post()
+  cache(@Body() cacheLoginSuccessCookieValueDto: CacheLoginSuccessCookieValueDto) {
+    return this.loginSuccessCookieValueService.cacheLoginSuccessCookieValue(cacheLoginSuccessCookieValueDto)
+  }
+
+  @Post('login-gzhu-library-booking-system')
+  async loginGZHULibraryBookingSystem(
+    @Body() loginGZHULibraryBookingSystemValueDto: LoginGZHULibraryBookingSystemValueDto,
+  ) {
+    return this.loginSuccessCookieValueService.loginGZHULibraryBookingSystem(loginGZHULibraryBookingSystemValueDto)
   }
 }

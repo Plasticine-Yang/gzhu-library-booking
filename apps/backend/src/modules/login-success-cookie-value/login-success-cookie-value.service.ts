@@ -1,3 +1,4 @@
+import { GZHULibraryBookingManagerImpl, LoginError } from '@gzhu-library-booking/core'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EntityNotFoundError, Repository } from 'typeorm'
@@ -6,8 +7,8 @@ import { BusinessHttpException } from 'src/common/exceptions'
 import { API_CODE } from 'src/constants'
 
 import { User } from '../user/entities/user.entity'
-import { CreateLoginSuccessCookieValueDto } from './dto/create-login-success-cookie-value.dto'
-import { UpdateLoginSuccessCookieValueDto } from './dto/update-login-success-cookie-value.dto'
+import { CacheLoginSuccessCookieValueDto } from './dto/cache-login-success-cookie-value.dto'
+import { LoginGZHULibraryBookingSystemValueDto } from './dto/login-gzhu-library-booking-system-value.dto'
 import { LoginSuccessCookieValue } from './entities/login-success-cookie-value.entity'
 
 @Injectable()
@@ -18,8 +19,30 @@ export class LoginSuccessCookieValueService {
   @InjectRepository(LoginSuccessCookieValue)
   private loginSuccessCookieValueRepository: Repository<LoginSuccessCookieValue>
 
-  async create(createLoginSuccessCookieValueDto: CreateLoginSuccessCookieValueDto) {
-    const { userId, value } = createLoginSuccessCookieValueDto
+  async findOneByUserId(userId: number) {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id: userId },
+        relations: { loginSuccessCookieValue: true },
+      })
+      const loginSuccessCookieValue = user.loginSuccessCookieValue
+
+      return loginSuccessCookieValue
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new BusinessHttpException(API_CODE.FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED, '用户 id 不存在', {
+          httpStatusCode: HttpStatus.BAD_REQUEST,
+        })
+      } else {
+        throw new BusinessHttpException(API_CODE.FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED, '未知错误', {
+          httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        })
+      }
+    }
+  }
+
+  async cacheLoginSuccessCookieValue(cacheLoginSuccessCookieValueDto: CacheLoginSuccessCookieValueDto) {
+    const { userId, value } = cacheLoginSuccessCookieValueDto
 
     try {
       const user = await this.userRepository.findOneOrFail({
@@ -58,37 +81,26 @@ export class LoginSuccessCookieValueService {
     }
   }
 
-  async findOneByUserId(userId: number) {
+  async loginGZHULibraryBookingSystem(loginGZHULibraryBookingSystemValueDto: LoginGZHULibraryBookingSystemValueDto) {
+    const { userId, username, password } = loginGZHULibraryBookingSystemValueDto
+    const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl()
+
     try {
-      const user = await this.userRepository.findOneOrFail({
-        where: { id: userId },
-        relations: { loginSuccessCookieValue: true },
-      })
-      const loginSuccessCookieValue = user.loginSuccessCookieValue
+      const loginResult = await gzhuLibraryBookingManagerImpl.login(username, password)
 
-      return loginSuccessCookieValue
+      this.cacheLoginSuccessCookieValue({ userId, value: loginResult.cookieValue })
+
+      return loginResult
     } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new BusinessHttpException(API_CODE.FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED, '用户 id 不存在', {
-          httpStatusCode: HttpStatus.BAD_REQUEST,
-        })
+      let errorMessage = ''
+
+      if (error instanceof LoginError) {
+        errorMessage = error.message
       } else {
-        throw new BusinessHttpException(API_CODE.FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED, '未知错误', {
-          httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        })
+        errorMessage = '未知错误'
       }
-    }
-  }
 
-  async update(userId: number, updateLoginSuccessCookieValueDto: UpdateLoginSuccessCookieValueDto) {
-    const { value } = updateLoginSuccessCookieValueDto
-
-    const loginSuccessCookieValue = await this.findOneByUserId(userId)
-
-    if (loginSuccessCookieValue !== null) {
-      loginSuccessCookieValue.value = value
-
-      this.loginSuccessCookieValueRepository.save(loginSuccessCookieValue)
+      throw new BusinessHttpException(API_CODE.LOGIN_GZHU_LIBRARY_BOOKING_SYSTEM_FAILED, errorMessage)
     }
   }
 }

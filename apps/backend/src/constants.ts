@@ -21,4 +21,7 @@ export class API_CODE {
 
   @ApiCodeDescription('根据用户 id 查找 LoginSuccessCookieValue 失败')
   static FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED = 2001
+
+  @ApiCodeDescription('登录到广州大学图书馆预约系统失败')
+  static LOGIN_GZHU_LIBRARY_BOOKING_SYSTEM_FAILED = 2002
 }
