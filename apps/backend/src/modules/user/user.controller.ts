@@ -16,12 +16,12 @@ export class UserController {
 
   @Get()
   findAll() {
-    return this.userService.findAll(UserSelector.Normal)
+    return this.userService.findAll(undefined, UserSelector.Normal)
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id, UserSelector.Normal)
+    return this.userService.findOne({ id: +id }, UserSelector.Normal)
   }
 
   @Patch(':id')
