@@ -36,6 +36,3 @@ lerna-debug.log*
 
 # eslint cache
 .eslintcache
-
-# business config
-.config

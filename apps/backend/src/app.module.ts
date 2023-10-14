@@ -6,6 +6,7 @@ import { DatabaseModule } from './common/database'
 import { configModuleOptions } from './common/use-yaml-config'
 import { ApisCodeModule } from './modules/api-codes/api-codes.module'
 import { UserModule } from './modules/user/user.module'
+import { LoginSuccessCookieValueModule } from './modules/login-success-cookie-value/login-success-cookie-value.module'
 
 @Module({
   // ============== application modules ==============
@@ -28,6 +29,7 @@ import { UserModule } from './modules/user/user.module'
     // ============== business modules ==============
     ApisCodeModule,
     UserModule,
+    LoginSuccessCookieValueModule,
   ],
 })
 export class AppModule {}

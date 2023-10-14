@@ -3,6 +3,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserService } from './user.service'
+import { UserSelector } from './enums'
 
 @Controller('user')
 export class UserController {
@@ -15,12 +16,12 @@ export class UserController {
 
   @Get()
   findAll() {
-    return this.userService.findAllBy()
+    return this.userService.findAll(UserSelector.Normal)
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id)
+    return this.userService.findOne(+id, UserSelector.Normal)
   }
 
   @Patch(':id')
@@ -31,17 +32,5 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id)
-  }
-
-  @Get(':id/login-success-cookie-value')
-  async getLoginSuccessCookieValue(@Param('id') id: string) {
-    const value = await this.userService.getLoginSuccessCookieValue(+id)
-    return value
-  }
-
-  @Post(':id/login-success-cookie-value')
-  async setLoginSuccessCookieValue(@Param('id') id: string, @Body('value') value: string) {
-    const loginSuccessCookieValue = await this.userService.setLoginSuccessCookieValue(+id, value)
-    return loginSuccessCookieValue
   }
 }
