@@ -27,20 +27,25 @@ export class LoginSuccessCookieValueService {
         relations: { loginSuccessCookieValue: true },
       })
       let loginSuccessCookieValue = user?.loginSuccessCookieValue
+      let shouldRelateUser = false
 
-      if (!loginSuccessCookieValue) {
+      if (loginSuccessCookieValue === null) {
         loginSuccessCookieValue = new LoginSuccessCookieValue()
 
         // 更新 User 实体的关联
         user.loginSuccessCookieValue = loginSuccessCookieValue
-        await this.userRepository.save(user)
+        shouldRelateUser = true
       }
 
       loginSuccessCookieValue.value = value
 
       // 保存 LoginSuccessCookieValue 实体
-      return await this.loginSuccessCookieValueRepository.save(loginSuccessCookieValue)
+      const savedLoginSuccessCookieValue = await this.loginSuccessCookieValueRepository.save(loginSuccessCookieValue)
+      shouldRelateUser && (await this.userRepository.save(user))
+
+      return savedLoginSuccessCookieValue.value
     } catch (error) {
+      console.log(error)
       if (error instanceof EntityNotFoundError) {
         throw new BusinessHttpException(API_CODE.CREATE_LOGIN_SUCCESS_COOKIE_VALUE_FAILED, '用户 id 不存在', {
           httpStatusCode: HttpStatus.BAD_REQUEST,

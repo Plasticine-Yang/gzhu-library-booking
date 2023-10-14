@@ -14,8 +14,10 @@ export class LoginSuccessCookieValueController {
   }
 
   @Get(':userId')
-  findOneByUserId(@Param('userId') userId: string) {
-    return this.loginSuccessCookieValueService.findOneByUserId(+userId)
+  async findOneByUserId(@Param('userId') userId: string) {
+    const loginSuccessCookieValue = await this.loginSuccessCookieValueService.findOneByUserId(+userId)
+
+    return loginSuccessCookieValue?.value ?? null
   }
 
   @Patch(':userId')
