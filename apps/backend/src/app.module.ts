@@ -4,10 +4,10 @@ import { LoggerModule } from 'nestjs-pino'
 import { DatabaseModule } from './common/database'
 
 import { configModuleOptions } from './common/use-yaml-config'
-import { ApisCodeModule } from './modules/api-codes/api-codes.module'
-import { AuthModule } from './modules/auth/auth.module'
-import { LoginSuccessCookieValueModule } from './modules/login-success-cookie-value/login-success-cookie-value.module'
-import { UserModule } from './modules/user/user.module'
+import { ApiCodeModule } from './modules/api-code/api-code.module'
+// import { AuthModule } from './modules/auth/auth.module'
+// import { LoginSuccessCookieValueModule } from './modules/login-success-cookie-value/login-success-cookie-value.module'
+// import { UserModule } from './modules/user/user.module'
 
 @Module({
   // ============== application modules ==============
@@ -28,10 +28,10 @@ import { UserModule } from './modules/user/user.module'
     DatabaseModule.forRoot({ type: 'mysql' }),
 
     // ============== business modules ==============
-    ApisCodeModule,
-    UserModule,
-    LoginSuccessCookieValueModule,
-    AuthModule,
+    ApiCodeModule,
+    // UserModule,
+    // LoginSuccessCookieValueModule,
+    // AuthModule,
   ],
 })
 export class AppModule {}

@@ -4,4 +4,7 @@ import { ApiCodeDescription, ApiCodeNamespace } from '../decorators'
 export class UserModuleApiCode {
   @ApiCodeDescription('用户名重复')
   static UsernameDuplicated = 3000
+
+  @ApiCodeDescription('查询所有用户失败')
+  static FindAllUserFailed = 3001
 }

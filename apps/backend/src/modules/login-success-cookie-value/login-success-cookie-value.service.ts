@@ -3,8 +3,8 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EntityNotFoundError, Repository } from 'typeorm'
 
+import { LoginSuccessCookieValueModuleApiCode } from 'src/common/api-code'
 import { BusinessHttpException } from 'src/common/exceptions'
-import { API_CODE } from 'src/constants'
 
 import { User } from '../user/entities/user.entity'
 import { CacheLoginSuccessCookieValueDto } from './dto/cache-login-success-cookie-value.dto'
@@ -30,11 +30,11 @@ export class LoginSuccessCookieValueService {
       return loginSuccessCookieValue
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
-        throw new BusinessHttpException(API_CODE.FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED, '用户 id 不存在', {
+        throw new BusinessHttpException(LoginSuccessCookieValueModuleApiCode.CookieError, '用户 id 不存在', {
           httpStatusCode: HttpStatus.BAD_REQUEST,
         })
       } else {
-        throw new BusinessHttpException(API_CODE.FIND_LOGIN_SUCCESS_COOKIE_VALUE_BY_USER_ID_FAILED, '未知错误', {
+        throw new BusinessHttpException(LoginSuccessCookieValueModuleApiCode.CookieError, '未知错误', {
           httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         })
       }
@@ -70,11 +70,11 @@ export class LoginSuccessCookieValueService {
     } catch (error) {
       console.log(error)
       if (error instanceof EntityNotFoundError) {
-        throw new BusinessHttpException(API_CODE.CREATE_LOGIN_SUCCESS_COOKIE_VALUE_FAILED, '用户 id 不存在', {
+        throw new BusinessHttpException(LoginSuccessCookieValueModuleApiCode.CookieError, '用户 id 不存在', {
           httpStatusCode: HttpStatus.BAD_REQUEST,
         })
       } else {
-        throw new BusinessHttpException(API_CODE.CREATE_LOGIN_SUCCESS_COOKIE_VALUE_FAILED, '未知错误', {
+        throw new BusinessHttpException(LoginSuccessCookieValueModuleApiCode.CookieError, '未知错误', {
           httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         })
       }
@@ -100,7 +100,7 @@ export class LoginSuccessCookieValueService {
         errorMessage = '未知错误'
       }
 
-      throw new BusinessHttpException(API_CODE.LOGIN_GZHU_LIBRARY_BOOKING_SYSTEM_FAILED, errorMessage)
+      throw new BusinessHttpException(LoginSuccessCookieValueModuleApiCode.CookieError, errorMessage)
     }
   }
 }

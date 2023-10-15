@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
+import { AuthModuleApiCode } from 'src/common/api-code'
 import { BusinessHttpException } from 'src/common/exceptions'
-import { API_CODE } from 'src/constants'
 
-import { LoginDto } from '../dto/login.dto'
-import { RegisterDto } from '../dto/register.dto'
 import { UserSelector } from '../user/enums'
 import { UserService } from '../user/user.service'
+import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
 
 @Injectable()
 export class AuthService {
@@ -17,12 +17,12 @@ export class AuthService {
 
     // 校验两次密码是否一致
     if (password !== confirmPassword) {
-      throw new BusinessHttpException(API_CODE.PASSWORD_MISMATCH_ERROR, '两次输入的密码不一致')
+      throw new BusinessHttpException(AuthModuleApiCode.PasswordAndConfirmPasswordNotMatch)
     }
 
     // TODO 邀请码验证逻辑
     if (inviteCode !== 'inviteCode') {
-      throw new BusinessHttpException(API_CODE.INVITE_CODE_INVALID, '邀请码无效')
+      throw new BusinessHttpException(AuthModuleApiCode.InviteCodeInvalid)
     }
 
     await this.userService.create({ username, password })
@@ -34,7 +34,7 @@ export class AuthService {
     const user = await this.userService.findOne({ username }, UserSelector.All)
 
     if (username !== loginDto.username || password !== user.password) {
-      throw new BusinessHttpException(API_CODE.USERNAME_OR_PASSWORD_ERROR, '用户名或密码错误')
+      throw new BusinessHttpException(AuthModuleApiCode.UsernameOrPasswordError)
     }
 
     // TODO: jwt
