@@ -7,4 +7,7 @@ export class UserModuleApiCode {
 
   @ApiCodeDescription('查询所有用户失败')
   static FindAllUserFailed = 3001
+
+  @ApiCodeDescription('用户不存在')
+  static UserDoesNotExist = 3002
 }

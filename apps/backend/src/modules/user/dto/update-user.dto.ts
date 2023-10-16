@@ -1,14 +1,19 @@
 import { PartialType } from '@nestjs/mapped-types'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsInt, IsObject, IsString } from 'class-validator'
 
+import { LoginSuccessCookieValue } from 'src/modules/login-success-cookie-value/entities/login-success-cookie-value.entity'
 import { CreateUserDto } from './create-user.dto'
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @IsString()
-  @IsNotEmpty()
-  oldPassword: string
+  @IsInt()
+  id?: number
 
   @IsString()
-  @IsNotEmpty()
-  password: string
+  username?: string
+
+  @IsString()
+  password?: string
+
+  @IsObject()
+  loginSuccessCookieValue?: LoginSuccessCookieValue
 }

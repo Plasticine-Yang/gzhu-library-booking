@@ -10,4 +10,7 @@ export class AuthModuleApiCode {
 
   @ApiCodeDescription('邀请码无效')
   static InviteCodeInvalid = 1002
+
+  @ApiCodeDescription('登录到图书馆预约系统失败')
+  static LoginGZHULibraryBookingSystemFailed = 1003
 }
