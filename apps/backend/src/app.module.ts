@@ -7,6 +7,8 @@ import { configModuleOptions } from './common/use-yaml-config'
 import { ApiCodeModule } from './modules/api-code/api-code.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { LoginSuccessCookieValueModule } from './modules/login-success-cookie-value/login-success-cookie-value.module'
+import { ReserveModule } from './modules/reserve/reserve.module'
+import { RoomModule } from './modules/room/room.module'
 import { UserModule } from './modules/user/user.module'
 
 @Module({
@@ -31,6 +33,8 @@ import { UserModule } from './modules/user/user.module'
     ApiCodeModule,
     AuthModule,
     LoginSuccessCookieValueModule,
+    ReserveModule,
+    RoomModule,
     UserModule,
   ],
 })
