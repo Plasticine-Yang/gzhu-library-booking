@@ -1,21 +1,24 @@
+import { GZHULibraryBookingManagerImpl, LoginError } from '@gzhu-library-booking/core'
 import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 
 import { AuthModuleApiCode } from 'src/common/api-code'
 import { BusinessHttpException } from 'src/common/exceptions'
 
-import { GZHULibraryBookingManagerImpl, LoginError } from '@gzhu-library-booking/core'
 import { LoginSuccessCookieValueService } from '../login-success-cookie-value/login-success-cookie-value.service'
 import { UserSelector } from '../user/enums'
 import { UserService } from '../user/user.service'
 import { LoginGZHULibraryBookingSystemValueDto } from './dto/login-gzhu-library-booking-system-value.dto'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
+import { JwtUserPayload } from './types'
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private LoginSuccessCookieValueService: LoginSuccessCookieValueService,
+    private jwtService: JwtService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -43,10 +46,11 @@ export class AuthService {
       throw new BusinessHttpException(AuthModuleApiCode.UsernameOrPasswordError)
     }
 
-    // TODO: jwt
+    const payload: JwtUserPayload = { id: user.id, username: user.username }
+    const accessToken = await this.jwtService.signAsync(payload)
+
     return {
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
+      accessToken,
     }
   }
 
