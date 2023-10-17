@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { setupAxiosInterceptors } from './setup-axios-interceptors'
+
 import { LOGIN_SUCCESS_COOKIE_NAME } from '@/constants'
+
+import { setupAxiosInterceptors } from './setup-axios-interceptors'
 
 class RequestInstance {
   private axiosInstance: AxiosInstance
@@ -49,6 +51,4 @@ class RequestInstance {
   }
 }
 
-const request = new RequestInstance()
-
-export { request }
+export { RequestInstance }

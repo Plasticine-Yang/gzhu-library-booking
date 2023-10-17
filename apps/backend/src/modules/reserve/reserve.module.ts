@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
-import { ReserveService } from './reserve.service'
+
 import { ReserveController } from './reserve.controller'
+import { ReserveService } from './reserve.service'
 
 @Module({
   controllers: [ReserveController],

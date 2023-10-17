@@ -6,7 +6,6 @@ const allUserSelector: FindOptionsSelect<User> = {
   id: true,
   username: true,
   password: true,
-  loginSuccessCookieValue: { id: true, value: true },
 }
 
 export { allUserSelector }

@@ -56,17 +56,12 @@ export class UserService {
   }
 
   async update(updateUserDto: UpdateUserDto) {
-    const { id, username, password, loginSuccessCookieValue } = updateUserDto
+    const { id, username, password } = updateUserDto
     const user = await this.findOne({ ...(id ? { id } : username ? { username } : null) }, UserSelector.All)
     let shouldUpdate = false
 
     if (password) {
       user.password = password
-      shouldUpdate = true
-    }
-
-    if (loginSuccessCookieValue) {
-      user.loginSuccessCookieValue = loginSuccessCookieValue
       shouldUpdate = true
     }
 

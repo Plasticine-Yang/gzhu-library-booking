@@ -1,6 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
-
-import { LoginSuccessCookieValue } from 'src/modules/login-success-cookie-value/entities/login-success-cookie-value.entity'
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 export class User {
@@ -12,8 +10,4 @@ export class User {
 
   @Column()
   password: string
-
-  @OneToOne(() => LoginSuccessCookieValue, { cascade: true, nullable: true })
-  @JoinColumn()
-  loginSuccessCookieValue: LoginSuccessCookieValue | null
 }

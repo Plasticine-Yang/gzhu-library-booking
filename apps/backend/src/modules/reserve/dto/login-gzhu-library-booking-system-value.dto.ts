@@ -1,11 +1,15 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
-export class CacheLoginSuccessCookieValueDto {
+export class LoginGZHULibraryBookingSystemValueDto {
   @IsNumber()
   @IsNotEmpty()
   userId: number
 
   @IsString()
   @IsNotEmpty()
-  value: string
+  username: string
+
+  @IsString()
+  @IsNotEmpty()
+  password: string
 }

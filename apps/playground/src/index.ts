@@ -25,7 +25,7 @@ try {
 } catch (error) {
   console.log('login2', error)
   // 未登录
-  if ((error as ResponseCodeError).code === 300) {
+  if ((error as ResponseCodeError).code === 300 || (error as any).code === 'ENOENT') {
     await login()
     await consume()
   }
@@ -67,13 +67,13 @@ async function consume() {
     const roomList = await gzhuLibraryBookingManagerImpl.getRoomList({
       labIds: labId,
       sysKind: 1,
-      resvDates: '20231012',
+      resvDates: '2023-10-21',
     })
 
     console.log('='.repeat(30), '房间列表', '='.repeat(30))
     console.log(JSON.stringify(roomList, null, 2))
 
-    const memberInfo = await gzhuLibraryBookingManagerImpl.getMemberInfo('学号或姓名')
+    const memberInfo = await gzhuLibraryBookingManagerImpl.getMemberInfo('1965500019')
 
     console.log('='.repeat(30), '人员信息', '='.repeat(30))
     console.log(JSON.stringify(memberInfo, null, 2))

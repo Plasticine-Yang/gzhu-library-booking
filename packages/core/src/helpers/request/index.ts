@@ -1,1 +1,1 @@
-export { request } from './request-instance'
+export { RequestInstance } from './request-instance'
