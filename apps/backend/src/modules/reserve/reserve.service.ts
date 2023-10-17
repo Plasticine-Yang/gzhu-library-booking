@@ -103,6 +103,7 @@ export class ReserveService {
     })
 
     this.schedulerRegistry.addCronJob(cronJobName, job)
+    job.start()
   }
 
   /** 新增预约定时任务 */
@@ -124,6 +125,7 @@ export class ReserveService {
     })
 
     this.schedulerRegistry.addCronJob(cronJobName, job)
+    job.start()
   }
 
   /**
