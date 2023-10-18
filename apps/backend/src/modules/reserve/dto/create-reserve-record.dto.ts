@@ -1,15 +1,17 @@
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
-import { Device } from '../types'
-
 export class CreateReserveRecordDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   cronJobName: string
 
   @IsString()
   @IsNotEmpty()
   cronTime: string
+
+  @IsString()
+  @IsNotEmpty()
+  reserveTime: string
 
   @IsString()
   @IsNotEmpty()
@@ -23,6 +25,10 @@ export class CreateReserveRecordDto {
   @IsNotEmpty()
   appointmentInitiatorStudentId: string
 
+  @IsNumber()
+  @IsNotEmpty()
+  appointmentInitiatorId: number
+
   @IsString()
   @IsNotEmpty()
   beginTime: string
@@ -31,9 +37,19 @@ export class CreateReserveRecordDto {
   @IsNotEmpty()
   endTime: string
 
-  @IsArray()
-  deviceList: Device[]
+  @IsString()
+  @IsNotEmpty()
+  deviceList: string
 
   @IsArray()
   appointmentStudentIdList: string[]
+
+  @IsArray()
+  appointmentIdList: number[]
+
+  @IsNumber()
+  loginAheadDuration?: number
+
+  @IsNumber()
+  concurrencyLevel?: number
 }

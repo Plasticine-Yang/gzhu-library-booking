@@ -1,6 +1,6 @@
-import { IsArray, IsNotEmpty, IsString } from 'class-validator'
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
-export class AddReserveRecordDto {
+export class AddReserveCronJobDto {
   @IsString()
   @IsNotEmpty()
   reserveTime: string
@@ -30,4 +30,10 @@ export class AddReserveRecordDto {
 
   @IsArray()
   appointmentStudentIdList: string[]
+
+  @IsNumber()
+  loginAheadDuration?: number
+
+  @IsNumber()
+  concurrencyLevel?: number
 }
