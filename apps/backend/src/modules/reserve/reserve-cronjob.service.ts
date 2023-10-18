@@ -7,6 +7,7 @@ import { ReserveModuleApiCode } from 'src/common/api-code'
 import { BusinessHttpException } from 'src/common/exceptions'
 
 import { DEFAULT_LOGIN_AHEAD_DURATION, DEFAULT_RESERVE_CONCURRENCY_LEVEL } from './constants'
+import { AddReserveRecordDto } from './dto/add-reserve-cron-job.dto'
 import { ReserveDto } from './dto/reserve.dto'
 import {
   parseReserveTime,
@@ -14,12 +15,13 @@ import {
   resolveAddReserveCronJobName,
   resolveLoginAheadTime,
 } from './helpers'
+import { ReserveRecordService } from './reserve-record.service'
 
 @Injectable()
 export class ReserveCronJobService {
   private readonly logger = new Logger(ReserveCronJobService.name)
 
-  constructor(private schedulerRegistry: SchedulerRegistry) {}
+  constructor(private schedulerRegistry: SchedulerRegistry, private reserveRecordService: ReserveRecordService) {}
 
   private checkCronJobIsExists(cronJobName: string): boolean {
     try {
@@ -51,16 +53,16 @@ export class ReserveCronJobService {
 
   private async handleReserve(gzhuLibraryBookingManagerImpl: GZHULibraryBookingManagerImpl, reserveDto: ReserveDto) {
     const { concurrencyLevel = DEFAULT_RESERVE_CONCURRENCY_LEVEL } = reserveDto
-    const { appoinmentInitiatorId, beginTime, endTime, deviceIdList, appoinmentIdList } = reserveDto.reserveFormValus
+    const { appointmentInitiatorId, beginTime, endTime, deviceIdList, appointmentIdList } = reserveDto.reserveFormValues
 
     const tasks = new Array(concurrencyLevel).map(async () => {
       try {
         await gzhuLibraryBookingManagerImpl.reserve({
-          appAccNo: appoinmentInitiatorId,
+          appAccNo: appointmentInitiatorId,
           resvBeginTime: beginTime,
           resvEndTime: endTime,
           resvDev: deviceIdList,
-          resvMember: appoinmentIdList,
+          resvMember: appointmentIdList,
         })
 
         this.logger.log('='.repeat(30), '预约成功！', '='.repeat(30))
@@ -110,9 +112,19 @@ export class ReserveCronJobService {
   public addReserveCronJob(
     gzhuLibraryBookingManagerImpl: GZHULibraryBookingManagerImpl,
     userId: number,
-    reserveDto: ReserveDto,
+    addReserveCronJobDto: AddReserveRecordDto,
   ) {
-    const { reserveTime } = reserveDto
+    const {
+      appointmentInitiatorStudentId,
+      appointmentStudentIdList,
+      beginTime,
+      reserveTime,
+      deviceIdList,
+      endTime,
+      gzhuPassword,
+      gzhuUsername,
+    } = addReserveCronJobDto
+
     const [hour, minute] = parseReserveTime(reserveTime)
     const cronJobName = resolveAddReserveCronJobName(userId, hour, minute)
 
@@ -120,15 +132,15 @@ export class ReserveCronJobService {
       return
     }
 
-    const job = new CronJob(`0 ${minute} ${hour} * * *`, () => {
-      return this.handleReserve(gzhuLibraryBookingManagerImpl, reserveDto)
-    })
+    // 创建预约记录
+    // this.reserveRecordService.createReserveRecord(userId, {})
 
-    this.schedulerRegistry.addCronJob(cronJobName, job)
-    job.start()
-  }
+    // 创建定时任务并启动
+    // const job = new CronJob(`0 ${minute} ${hour} * * *`, () => {
+    //   return this.handleReserve(gzhuLibraryBookingManagerImpl, reserveDto)
+    // })
 
-  async getAllReserveCronJobs() {
-    return this.schedulerRegistry.getCronJobs()
+    // this.schedulerRegistry.addCronJob(cronJobName, job)
+    // job.start()
   }
 }

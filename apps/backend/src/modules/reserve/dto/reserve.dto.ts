@@ -9,7 +9,7 @@ export interface ReserveDto {
   reserveTime: string
 
   /** 预约表单 */
-  reserveFormValus: ReserveFormValues
+  reserveFormValues: ReserveFormValues
 
   /**
    * 提前多少分钟登录
@@ -28,7 +28,7 @@ export interface ReserveDto {
 
 export interface ReserveFormValues {
   /** 预约发起人的 id - 对应 appAccNo */
-  appoinmentInitiatorId: number
+  appointmentInitiatorId: number
 
   /** 预约开始时间 - 对应 resvBeginTime */
   beginTime: string
@@ -40,5 +40,5 @@ export interface ReserveFormValues {
   deviceIdList: number[]
 
   /** 预约人的 id - 对应 resvMember */
-  appoinmentIdList: number[]
+  appointmentIdList: number[]
 }
