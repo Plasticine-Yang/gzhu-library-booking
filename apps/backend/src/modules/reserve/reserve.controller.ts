@@ -14,9 +14,4 @@ export class ReserveController {
   async reserve(@Req() req: RequestWithJwtUserPayload, @Body() reserveDto: ReserveDto) {
     return this.reserveService.reserve(req.user.id, reserveDto)
   }
-
-  @Post('test')
-  async test() {
-    return this.reserveService.test()
-  }
 }
