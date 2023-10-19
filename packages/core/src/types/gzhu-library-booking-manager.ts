@@ -9,6 +9,7 @@ import type {
 } from './DTO'
 import { MemberInfoList } from './DTO'
 import type { LoginResult } from './login'
+import { RequestInstanceOptions } from './request-instance'
 
 export interface GZHULibraryBookingManager {
   /** 登录 */
@@ -36,4 +37,6 @@ export interface GZHULibraryBookingManager {
   reserve(requestBody: ReserveRequestBody): Promise<null>
 }
 
-export interface GZHULibraryBookingManagerOptions {}
+export interface GZHULibraryBookingManagerOptions {
+  requestInstanceOptions?: RequestInstanceOptions
+}

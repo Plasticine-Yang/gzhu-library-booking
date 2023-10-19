@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import { LOGIN_SUCCESS_COOKIE_NAME } from '@/constants'
+import { RequestInstanceOptions } from '@/types'
 
 import { setupAxiosInterceptors } from './setup-axios-interceptors'
 
@@ -8,8 +9,11 @@ class RequestInstance {
   private axiosInstance: AxiosInstance
   private loginSuccessCookieValue: string
 
-  constructor() {
+  constructor(options?: RequestInstanceOptions) {
+    const { proxy = false } = options ?? {}
+
     this.axiosInstance = axios.create({
+      proxy,
       headers: {
         'User-Agent':
           'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36',

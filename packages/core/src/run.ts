@@ -29,9 +29,9 @@ export async function run(options: RunOptions) {
 async function runUnitOfWork(unitId: number, options: RunOptions) {
   console.log(`工作单元 ${unitId} 开始运行...`)
 
-  const { username, password, rules } = options
+  const { username, password, rules, requestInstanceOptions } = options
 
-  const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl()
+  const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl({ requestInstanceOptions })
 
   const loginResult = await gzhuLibraryBookingManagerImpl.login(username, password)
   const { cookieValue } = loginResult
@@ -62,6 +62,7 @@ async function runUnitOfWork(unitId: number, options: RunOptions) {
       /** 根据学号获取预约人的 accNo */
       await Promise.all(
         reserverStudentIdList.map(async (reserverStudentId) => {
+          console.log(`[unit ${unitId}] 查询 ${reserverStudentId} 的 accNo`)
           const memberInfo = await gzhuLibraryBookingManagerImpl.getMemberInfo(reserverStudentId)
 
           if (!memberInfo?.accNo) {
@@ -83,8 +84,8 @@ async function runUnitOfWork(unitId: number, options: RunOptions) {
 
     await gzhuLibraryBookingManagerImpl.reserve({
       appAccNo,
-      resvBeginTime: beginTime,
-      resvEndTime: endTime,
+      resvBeginTime: resolveReserveRequestTime(beginTime, dayDelta),
+      resvEndTime: resolveReserveRequestTime(endTime, dayDelta),
       resvDev: [resvDev],
       resvMember: resvMember,
     })
@@ -107,7 +108,7 @@ async function resolveAppAccNo(
 
     return appAccNo
   } catch (error) {
-    throw new Error('预约发起人的 appAccNo 获取失败')
+    throw new Error('预约发起人的 appAccNo 获取失败', { cause: error })
   }
 }
 
@@ -126,7 +127,7 @@ async function resolveLabId(gzhuLibraryBookingManagerImpl: GZHULibraryBookingMan
 
 function resolveResvDates(dayDelta: number) {
   const today = dayjs()
-  const resvDates = today.add(dayDelta, 'day').format('YYYY-MM-DD')
+  const resvDates = today.add(dayDelta, 'day').format('YYYYMMDD')
 
   return resvDates
 }
@@ -143,7 +144,7 @@ async function resolveRoomList(
       resvDates: resolveResvDates(dayDelta),
     })
   } catch (error) {
-    throw new Error(`获取 ${dayDelta} 天后的房间列表失败`)
+    throw new Error(`获取 ${dayDelta} 天后的房间列表失败`, { cause: error })
   }
 }
 
@@ -155,6 +156,13 @@ function resolveResvDev(roomList: RoomList, roomName: string) {
   }
 
   return resvDev
+}
+
+function resolveReserveRequestTime(time: string, dayDelta: number) {
+  const today = dayjs()
+  const date = today.add(dayDelta, 'day').format('YYYY-MM-DD')
+
+  return `${date} ${time}`
 }
 
 async function waitUntil(initiateReserveTime: string) {

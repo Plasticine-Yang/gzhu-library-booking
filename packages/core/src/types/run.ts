@@ -1,8 +1,11 @@
+import type { RequestInstanceOptions } from './request-instance'
+
 export interface RunOptions {
   username: string
   password: string
   rules: ReserveRule[]
   concurrency?: number
+  requestInstanceOptions?: RequestInstanceOptions
 }
 
 export interface ReserveRule {

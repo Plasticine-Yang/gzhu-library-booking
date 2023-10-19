@@ -27,7 +27,9 @@ class GZHULibraryBookingManagerImpl implements GZHULibraryBookingManager {
   private request: RequestInstance
 
   constructor(private options?: GZHULibraryBookingManagerOptions) {
-    this.request = new RequestInstance()
+    const { requestInstanceOptions } = options ?? {}
+
+    this.request = new RequestInstance(requestInstanceOptions)
   }
 
   public async login(username: string, password: string): Promise<LoginResult> {

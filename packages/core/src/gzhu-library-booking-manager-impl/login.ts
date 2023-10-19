@@ -61,7 +61,6 @@ async function internalLogin(username: string, password: string): Promise<LoginR
     // 等待登录成功或失败的响应
     const response = await page
       .waitForResponse((response) => {
-        console.log(response.url())
         return response.url().includes(LOGIN_URL)
       })
       .catch((reason) => {
@@ -73,7 +72,6 @@ async function internalLogin(username: string, password: string): Promise<LoginR
 
     // 获取响应的状态码
     const responseStatus = response.status()
-    console.log(responseStatus)
 
     if (responseStatus === 200) {
       // 登录失败
