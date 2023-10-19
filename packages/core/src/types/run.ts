@@ -1,3 +1,7 @@
+import { Logger } from '@/logger'
+
+import { LoggerOptions } from './logger'
+import { MailerOptions } from './mailer'
 import type { RequestInstanceOptions } from './request-instance'
 
 export interface RunOptions {
@@ -6,6 +10,13 @@ export interface RunOptions {
   rules: ReserveRule[]
   concurrency?: number
   requestInstanceOptions?: RequestInstanceOptions
+  loggerOptions?: LoggerOptions
+  mailerOptions?: MailerOptions
+}
+
+export interface RunUnitOfWorkOptions {
+  runOptions: RunOptions
+  logger: Logger
 }
 
 export interface ReserveRule {
