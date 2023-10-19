@@ -24,17 +24,20 @@ import type {
 import { internalLogin } from './login'
 
 class GZHULibraryBookingManagerImpl implements GZHULibraryBookingManager {
+  private options: GZHULibraryBookingManagerOptions
   private request: RequestInstance
 
-  constructor(private options?: GZHULibraryBookingManagerOptions) {
-    const { requestInstanceOptions } = options ?? {}
+  constructor(options?: GZHULibraryBookingManagerOptions) {
+    this.options = options ?? {}
+
+    const { requestInstanceOptions } = this.options
 
     this.request = new RequestInstance(requestInstanceOptions)
   }
 
   public async login(username: string, password: string): Promise<LoginResult> {
-    this.options
-    const loginResult = await internalLogin(username, password)
+    const { puppeteerOptions } = this.options
+    const loginResult = await internalLogin(username, password, { puppeteerOptions })
 
     return loginResult
   }

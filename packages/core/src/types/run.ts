@@ -2,6 +2,7 @@ import { Logger } from '@/logger'
 
 import { LoggerOptions } from './logger'
 import { MailerOptions } from './mailer'
+import { PuppeteerOptions } from './puppeteer'
 import type { RequestInstanceOptions } from './request-instance'
 
 export interface RunOptions {
@@ -12,6 +13,7 @@ export interface RunOptions {
   requestInstanceOptions?: RequestInstanceOptions
   loggerOptions?: LoggerOptions
   mailerOptions?: MailerOptions
+  puppeteerOptions?: PuppeteerOptions
 }
 
 export interface RunUnitOfWorkOptions {

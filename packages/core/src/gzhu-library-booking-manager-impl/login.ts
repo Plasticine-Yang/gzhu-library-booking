@@ -1,19 +1,33 @@
 import puppeteer from 'puppeteer'
 
-import { GZHU_LIBRARY_BOOKING_SYSTEM_URL, LOGIN_SUCCESS_COOKIE_NAME, LOGIN_URL } from '@/constants'
+import {
+  DEFAULT_NO_SANDBOX,
+  DEFAULT_OPEN_BROWSER,
+  GZHU_LIBRARY_BOOKING_SYSTEM_URL,
+  LOGIN_SUCCESS_COOKIE_NAME,
+  LOGIN_URL,
+} from '@/constants'
 import { LoginErrorPhase } from '@/enums'
 import { LoginError } from '@/errors'
-import type { LoginResult } from '@/types'
 import { PerformanceImpl } from '@/performance-impl'
+import type { InternalLoginOptions, LoginResult } from '@/types'
 
-const GZHU_LIBRARY_BOOKING_OPEN_BROWSER = process.env.GZHU_LIBRARY_BOOKING_OPEN_BROWSER === 'true' ? true : false
+const GZHU_LIBRARY_BOOKING_OPEN_BROWSER = process.env.GZHU_LIBRARY_BOOKING_OPEN_BROWSER === 'true' ? true : undefined
+const GZHU_LIBRARY_BOOKING_NO_SANDBOX = process.env.GZHU_LIBRARY_BOOKING_NO_SANDBOX === 'true' ? true : undefined
 
-async function internalLogin(username: string, password: string): Promise<LoginResult> {
+async function internalLogin(username: string, password: string, options: InternalLoginOptions): Promise<LoginResult> {
+  const { puppeteerOptions } = options
+  const openBrowser = puppeteerOptions?.openBrowser ?? GZHU_LIBRARY_BOOKING_OPEN_BROWSER ?? DEFAULT_OPEN_BROWSER
+  const noSandBox = puppeteerOptions?.noSandBox ?? GZHU_LIBRARY_BOOKING_NO_SANDBOX ?? DEFAULT_NO_SANDBOX
+
   const performanceImpl = new PerformanceImpl()
   performanceImpl.start()
 
   const browser = await puppeteer
-    .launch({ headless: GZHU_LIBRARY_BOOKING_OPEN_BROWSER ? false : 'new' })
+    .launch({
+      headless: openBrowser ? false : 'new',
+      ...(noSandBox ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : null),
+    })
     .catch((reason) => {
       throw new LoginError('puppeteer 启动失败', { cause: reason, phase: LoginErrorPhase.Launch })
     })

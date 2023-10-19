@@ -9,6 +9,7 @@ import type {
 } from './DTO'
 import { MemberInfoList } from './DTO'
 import type { LoginResult } from './login'
+import { PuppeteerOptions } from './puppeteer'
 import { RequestInstanceOptions } from './request-instance'
 
 export interface GZHULibraryBookingManager {
@@ -39,4 +40,5 @@ export interface GZHULibraryBookingManager {
 
 export interface GZHULibraryBookingManagerOptions {
   requestInstanceOptions?: RequestInstanceOptions
+  puppeteerOptions?: PuppeteerOptions
 }

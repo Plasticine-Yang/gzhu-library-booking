@@ -45,12 +45,12 @@ export async function run(options: RunOptions) {
 }
 
 async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
-  const { username, password, rules, requestInstanceOptions } = options.runOptions
+  const { username, password, rules, requestInstanceOptions, puppeteerOptions } = options.runOptions
   const { logger } = options
 
   logger.log(`工作单元 ${unitId} 开始运行...`)
 
-  const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl({ requestInstanceOptions })
+  const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl({ requestInstanceOptions, puppeteerOptions })
 
   const loginResult = await gzhuLibraryBookingManagerImpl.login(username, password)
   const { cookieValue } = loginResult
