@@ -45,4 +45,7 @@ export interface ReserveRule {
    * @default "6:30"
    */
   initiateReserveTime?: string
+
+  /** @default false */
+  runWhenReady?: boolean
 }

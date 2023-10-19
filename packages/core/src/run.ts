@@ -2,9 +2,10 @@ import dayjs from 'dayjs'
 
 import { DEFAULT_CONCURRENCY, DEFAULT_INITIATE_RESERVE_TIME } from './constants'
 import { GZHULibraryBookingManagerImpl } from './gzhu-library-booking-manager-impl'
-import type { ReserveRule, RoomList, RunOptions, RunUnitOfWorkOptions } from './types'
+import { getNow } from './helpers'
 import { Logger } from './logger'
 import { Mailer } from './mailer'
+import type { ReserveRule, RoomList, RunOptions, RunUnitOfWorkOptions } from './types'
 
 export async function run(options: RunOptions) {
   const { concurrency = DEFAULT_CONCURRENCY, loggerOptions, mailerOptions } = options
@@ -16,7 +17,7 @@ export async function run(options: RunOptions) {
     try {
       return await runUnitOfWork(unitId, { runOptions: options, logger })
     } catch (error) {
-      logger.error(`[unit ${unitId} error]`, error as Error)
+      logger.error(`「unit ${unitId}」`, error as Error)
       throw error
     }
   })
@@ -29,13 +30,15 @@ export async function run(options: RunOptions) {
     logger.error('预约失败')
   }
 
-  logger.consumeAndEmpty((logContentList) => {
+  logger.consumeAndEmpty(async (logContentList) => {
     if (mailerOptions) {
+      console.log('开始发送邮件上报日志...')
       try {
         const mailer = new Mailer(mailerOptions)
-        mailer.consumeLogContentList(logContentList)
+        await mailer.consumeLogContentList(logContentList)
+        console.log('邮件上报日志成功！')
       } catch (error) {
-        console.error('日志邮件发送失败')
+        console.error('日志邮件发送失败', error)
       }
     }
   })
@@ -61,7 +64,7 @@ async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
   const labId = await resolveLabId(gzhuLibraryBookingManagerImpl)
 
   async function performRule(rule: ReserveRule): Promise<void> {
-    logger.log(`[unit ${unitId}] 开始预处理准备规则相应参数`)
+    logger.log(`「unit ${unitId}」 开始预处理准备规则相应参数`)
 
     const {
       beginTime,
@@ -70,21 +73,26 @@ async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
       reserverStudentIdList,
       roomName,
       initiateReserveTime = DEFAULT_INITIATE_RESERVE_TIME,
+      runWhenReady,
     } = rule
 
     const [roomList, resvMember] = await Promise.all([
-      await resolveRoomList(gzhuLibraryBookingManagerImpl, labId, dayDelta),
+      (async () => {
+        logger.log(`「unit ${unitId}」 开始获取房间列表`)
+        return await resolveRoomList(gzhuLibraryBookingManagerImpl, labId, dayDelta)
+      })(),
 
       /** 根据学号获取预约人的 accNo */
       await Promise.all(
         reserverStudentIdList.map(async (reserverStudentId) => {
-          logger.log(`[unit ${unitId}] 查询 ${reserverStudentId} 的 accNo`)
+          logger.log(`「unit ${unitId}」 开始查询 ${reserverStudentId} 的 accNo...`)
           const memberInfo = await gzhuLibraryBookingManagerImpl.getMemberInfo(reserverStudentId)
 
           if (!memberInfo?.accNo) {
-            throw new Error(`[unit ${unitId}] 获取预约人 ${reserverStudentId} 的 accNo 失败`)
+            throw new Error(`「unit ${unitId}」 获取预约人 ${reserverStudentId} 的 accNo 失败`)
           }
 
+          logger.log(`「unit ${unitId}」 查询 ${reserverStudentId} 的 accNo 成功，accNo 为 ${memberInfo.accNo}`)
           return memberInfo.accNo
         }),
       ),
@@ -92,11 +100,17 @@ async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
 
     /** 获取房间号 */
     const resvDev = resolveResvDev(roomList, roomName)
+    logger.log(`「unit ${unitId}」 获取到 ${roomName} 的房间 devId 为 ${resvDev}`)
 
-    logger.log(`[unit ${unitId}] 参数准备完毕，等待到达指定时间后开始发起预约请求...`)
-
-    // 等到了指定时间时才发起预约请求
-    await waitUntil(initiateReserveTime)
+    if (!runWhenReady) {
+      // 等到了指定时间时才发起预约请求
+      logger.log(
+        `「unit ${unitId}」 参数准备完毕，现在时间为 ${getNow()} 等待到达指定时间 ${initiateReserveTime} 后开始发起预约请求...`,
+      )
+      await waitUntil(initiateReserveTime)
+    } else {
+      logger.log(`「unit ${unitId}」 参数准备完毕，开启了 runWhenReady 配置，立即发起预约请求`)
+    }
 
     await gzhuLibraryBookingManagerImpl.reserve({
       appAccNo,

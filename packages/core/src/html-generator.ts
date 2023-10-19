@@ -2,16 +2,16 @@ import { readFileSync } from 'fs'
 import hbs, { HelperOptions } from 'handlebars'
 import { resolve } from 'path'
 
-import { SRC_ROOT } from './constants'
+import { PACKAGE_ROOT } from './constants'
 import { HTMLGeneratorRenderProps } from './types'
 
 export class HTMLGenerator {
   private indexTemplate: string
 
   constructor() {
-    this.indexTemplate = readFileSync(resolve(SRC_ROOT, 'templates/index.hbs'), 'utf-8')
-    const infoPartial = readFileSync(resolve(SRC_ROOT, 'templates/info.hbs'), 'utf-8')
-    const errorPartial = readFileSync(resolve(SRC_ROOT, 'templates/error.hbs'), 'utf-8')
+    this.indexTemplate = readFileSync(resolve(PACKAGE_ROOT, 'templates/index.hbs'), 'utf-8')
+    const infoPartial = readFileSync(resolve(PACKAGE_ROOT, 'templates/info.hbs'), 'utf-8')
+    const errorPartial = readFileSync(resolve(PACKAGE_ROOT, 'templates/error.hbs'), 'utf-8')
 
     // helpers
     hbs.registerHelper('ifEquals', function (this: any, a: string, b: string, options: HelperOptions) {

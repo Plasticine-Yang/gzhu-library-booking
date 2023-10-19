@@ -1,3 +1,5 @@
 import { resolve } from 'path'
 
-export const SRC_ROOT = resolve(__dirname, '..')
+const NODE_ENV = process.env.NODE_ENV ?? 'production'
+
+export const PACKAGE_ROOT = NODE_ENV === 'production' ? resolve(__dirname, '..') : resolve(__dirname, '../..')

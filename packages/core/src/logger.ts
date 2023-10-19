@@ -1,5 +1,6 @@
 import { inspect } from 'util'
 
+import { getNow } from './helpers'
 import type { LogContent, LoggerOptions } from './types'
 
 export class Logger {
@@ -14,26 +15,36 @@ export class Logger {
 
   public log(message: string) {
     const { notOutputToConsole } = this.options
+    const now = getNow()
 
-    this.logContentList.push({ type: 'info', content: message })
+    this.logContentList.push({ type: 'info', content: message, time: now })
 
     if (!notOutputToConsole) {
-      console.log(message)
+      console.log(`[INFO][${now}]`, message)
     }
   }
 
   public error(message: string, error?: Error) {
     const { notOutputToConsole } = this.options
+    const now = getNow()
+    const formatErrorDetail = error ? ` ${inspect(error)}` : ''
 
-    this.logContentList.push({ type: 'error', content: message + error ? ` ${inspect(error)}` : '' })
+    this.logContentList.push({
+      type: 'error',
+      content: message + formatErrorDetail,
+      time: now,
+    })
 
     if (!notOutputToConsole) {
-      console.error(message, error)
+      console.error(`[ERROR][${now}]`, ...(error ? [message, error] : [message]))
     }
   }
 
-  public consumeAndEmpty(callback: (logContentList: LogContent[]) => void) {
-    callback(this.logContentList)
-    this.logContentList.length = 0
+  public async consumeAndEmpty(callback: (logContentList: LogContent[]) => Promise<void>) {
+    try {
+      await callback(this.logContentList)
+    } finally {
+      this.logContentList.length = 0
+    }
   }
 }

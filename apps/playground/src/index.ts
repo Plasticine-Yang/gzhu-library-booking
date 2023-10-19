@@ -7,16 +7,22 @@ if (username && password) {
   run({
     username,
     password,
-    concurrency: 1,
-    requestInstanceOptions: { proxy: { host: '127.0.0.1', port: 8899 } },
+    mailerOptions: {
+      host: 'smtp.qq.com',
+      port: 465,
+      user: '你的邮箱',
+      pass: '你的邮箱授权码',
+      from: '发送方邮箱',
+      to: '接收方邮箱',
+    },
     rules: [
       {
         beginTime: '8:30:00',
         endTime: '12:00:00',
         dayDelta: 3,
-        roomName: 'E21',
-        reserverStudentIdList: ['1965500019'],
-        initiateReserveTime: '9:00:00',
+        roomName: 'E25',
+        reserverStudentIdList: ['预约人学号'],
+        initiateReserveTime: '6:30:00',
       },
     ],
   })

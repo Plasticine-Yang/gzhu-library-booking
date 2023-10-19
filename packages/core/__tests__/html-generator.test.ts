@@ -6,10 +6,18 @@ describe('HTMLGenerator', () => {
 
     const result = htmlGenerator.render({
       logContentList: [
-        { type: 'info', content: 'info message 1' },
-        { type: 'error', content: 'error message 1' },
-        { type: 'info', content: 'info message 2' },
-        { type: 'error', content: 'error message 2' },
+        { type: 'info', content: 'info message 1', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 1', time: '2023-10-19 22:27:00' },
+        { type: 'info', content: 'info message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
+        { type: 'error', content: 'error message 2', time: '2023-10-19 22:27:00' },
       ],
       subject: 'Subject',
     })
@@ -52,7 +60,7 @@ describe('HTMLGenerator', () => {
             gap: 16px;
             width: 100%;
             min-height: 90vh;
-            margin-top: 20px;
+            padding: 20px;
           }
 
           .info,
@@ -81,12 +89,26 @@ describe('HTMLGenerator', () => {
             background: #e06c75;
           }
 
+          .info__time,
+          .error__time {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: #2c313c;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+          }
+
           .info__content,
           .error__content {
             margin-top: 40px;
             max-height: 500px;
             max-width: 100%;
             overflow: scroll;
+            background: #1e2227;
+            padding: 0 10px;
+            border-radius: 10px;
           }
         </style>
       </head>
@@ -98,24 +120,84 @@ describe('HTMLGenerator', () => {
           <div class=\\"log-content-list\\">
             <div class=\\"info\\">
               <div class=\\"info__title\\">Info</div>
+              <div class=\\"info__time\\">2023-10-19 22:27:00</div>
               <div class=\\"info__content\\">
                 <p>info message 1</p>
               </div>
             </div>
             <div class=\\"error\\">
               <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
               <div class=\\"error__content\\">
                 <p>error message 1</p>
               </div>
             </div>
             <div class=\\"info\\">
               <div class=\\"info__title\\">Info</div>
+              <div class=\\"info__time\\">2023-10-19 22:27:00</div>
               <div class=\\"info__content\\">
                 <p>info message 2</p>
               </div>
             </div>
             <div class=\\"error\\">
               <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
+              <div class=\\"error__content\\">
+                <p>error message 2</p>
+              </div>
+            </div>
+            <div class=\\"error\\">
+              <div class=\\"error__title\\">Error</div>
+              <div class=\\"error__time\\">2023-10-19 22:27:00</div>
               <div class=\\"error__content\\">
                 <p>error message 2</p>
               </div>

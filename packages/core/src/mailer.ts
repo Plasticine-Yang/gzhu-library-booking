@@ -25,10 +25,10 @@ export class Mailer {
     this.htmlGenerator = new HTMLGenerator()
   }
 
-  public consumeLogContentList(logContentList: LogContent[]) {
+  public async consumeLogContentList(logContentList: LogContent[]) {
     const { from, to, subject = DEFAULT_SUBJECT, user } = this.options
 
-    this.transporter.sendMail({
+    await this.transporter.sendMail({
       from: from ?? user, // sender address
       to: to ?? user, // list of receivers
       subject: subject ?? DEFAULT_SUBJECT, // Subject line

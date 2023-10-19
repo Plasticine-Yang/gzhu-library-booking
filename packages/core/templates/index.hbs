@@ -23,10 +23,10 @@
       justify-content: center;
       align-items: center;
       width: 100%;
-      height: 100vh;
+      min-height: 100vh;
       background: #1e2227;
       color: white;
-      padding: 20px 30px;
+      padding: 0 20px 30px;
     }
 
     .log-content-list {
@@ -35,7 +35,6 @@
       gap: 16px;
       width: 100%;
       min-height: 90vh;
-      margin-top: 20px;
     }
 
     .info,
@@ -64,12 +63,26 @@
       background: #e06c75;
     }
 
+    .info__time,
+    .error__time {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: #2c313c;
+      padding: 2px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
     .info__content,
     .error__content {
       margin-top: 40px;
       max-height: 500px;
       max-width: 100%;
       overflow: scroll;
+      background: #1e2227;
+      padding: 0 10px;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -81,9 +94,9 @@
     <div class="log-content-list">
       {{#each logContentList}}
       {{#ifEquals this.type "info"}}
-      {{> info content=this.content}}
+      {{> info content=this.content time=this.time}}
       {{else}}
-      {{> error content=this.content}}
+      {{> error content=this.content time=this.time}}
       {{/ifEquals}}
       {{/each}}
     </div>
