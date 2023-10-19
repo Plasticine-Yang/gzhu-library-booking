@@ -171,12 +171,12 @@ async function waitUntil(initiateReserveTime: string) {
   )
 
   // 设置目标时间为当天的 6:30:00
-  const targetTime = dayjs().set('hour', hour).set('minute', minute).set('second', second)
+  let targetTime = dayjs().set('hour', hour).set('minute', minute).set('second', second)
   const currentTime = dayjs() // 获取当前时间
 
   if (currentTime.isAfter(targetTime)) {
     // 如果当前时间已经晚于目标时间，则将目标时间设置为第二天的 6:30:00
-    targetTime.add(1, 'day')
+    targetTime = targetTime.add(1, 'day')
   }
 
   const timeToWait = targetTime.diff(currentTime) // 计算需要等待的时间（毫秒）
