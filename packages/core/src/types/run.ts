@@ -14,6 +14,7 @@ export interface RunOptions {
   loggerOptions?: LoggerOptions
   mailerOptions?: MailerOptions
   puppeteerOptions?: PuppeteerOptions
+  maxLoginFailedRetryCount?: number
 }
 
 export interface RunUnitOfWorkOptions {
@@ -50,4 +51,11 @@ export interface ReserveRule {
 
   /** @default false */
   runWhenReady?: boolean
+
+  /**
+   * 超过预约时间后是否要立刻执行，不开启该功能则会等到下一天的这个时间才执行
+   *
+   * @default false
+   */
+  runWhenExpireInitiateReserveTime?: boolean
 }

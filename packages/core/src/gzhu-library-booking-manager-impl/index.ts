@@ -36,10 +36,25 @@ class GZHULibraryBookingManagerImpl implements GZHULibraryBookingManager {
   }
 
   public async login(username: string, password: string): Promise<LoginResult> {
-    const { puppeteerOptions } = this.options
-    const loginResult = await internalLogin(username, password, { puppeteerOptions })
+    const { puppeteerOptions, maxLoginFailedRetryCount } = this.options
+    let retryCount = 0
 
-    return loginResult
+    const loginWithRetry = async (): Promise<LoginResult> => {
+      try {
+        const loginResult = await internalLogin(username, password, { puppeteerOptions })
+
+        return loginResult
+      } catch (error) {
+        if (maxLoginFailedRetryCount !== undefined && retryCount < maxLoginFailedRetryCount) {
+          retryCount++
+          return loginWithRetry()
+        } else {
+          throw new Error(`重试 ${retryCount} 次后仍然登录失败`, { cause: error })
+        }
+      }
+    }
+
+    return loginWithRetry()
   }
 
   public setLoginSuccessCookieValue(cookieValue: string): void {

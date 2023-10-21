@@ -41,4 +41,5 @@ export interface GZHULibraryBookingManager {
 export interface GZHULibraryBookingManagerOptions {
   requestInstanceOptions?: RequestInstanceOptions
   puppeteerOptions?: PuppeteerOptions
+  maxLoginFailedRetryCount?: number
 }

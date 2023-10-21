@@ -45,12 +45,17 @@ export async function run(options: RunOptions) {
 }
 
 async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
-  const { username, password, rules, requestInstanceOptions, puppeteerOptions } = options.runOptions
+  const { username, password, rules, requestInstanceOptions, puppeteerOptions, maxLoginFailedRetryCount } =
+    options.runOptions
   const { logger } = options
 
   logger.log(`工作单元 ${unitId} 开始运行...`)
 
-  const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl({ requestInstanceOptions, puppeteerOptions })
+  const gzhuLibraryBookingManagerImpl = new GZHULibraryBookingManagerImpl({
+    requestInstanceOptions,
+    puppeteerOptions,
+    maxLoginFailedRetryCount,
+  })
 
   const loginResult = await gzhuLibraryBookingManagerImpl.login(username, password)
   const { cookieValue } = loginResult
@@ -74,6 +79,7 @@ async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
       roomName,
       initiateReserveTime = DEFAULT_INITIATE_RESERVE_TIME,
       runWhenReady,
+      runWhenExpireInitiateReserveTime,
     } = rule
 
     const [roomList, resvMember] = await Promise.all([
@@ -107,7 +113,7 @@ async function runUnitOfWork(unitId: number, options: RunUnitOfWorkOptions) {
       logger.log(
         `「unit ${unitId}」 参数准备完毕，现在时间为 ${getNow()} 等待到达指定时间 ${initiateReserveTime} 后开始发起预约请求...`,
       )
-      await waitUntil(initiateReserveTime)
+      await waitUntil(initiateReserveTime, runWhenExpireInitiateReserveTime)
     } else {
       logger.log(`「unit ${unitId}」 参数准备完毕，开启了 runWhenReady 配置，立即发起预约请求`)
     }
@@ -195,7 +201,7 @@ function resolveReserveRequestTime(time: string, dayDelta: number) {
   return `${date} ${time}`
 }
 
-async function waitUntil(initiateReserveTime: string) {
+async function waitUntil(initiateReserveTime: string, runWhenExpireInitiateReserveTime?: boolean) {
   const [hour, minute, second] = (initiateReserveTime.split(':') as [string, string, string]).map((item) =>
     parseInt(item, 10),
   )
@@ -204,9 +210,12 @@ async function waitUntil(initiateReserveTime: string) {
   let targetTime = dayjs().set('hour', hour).set('minute', minute).set('second', second)
   const currentTime = dayjs() // 获取当前时间
 
-  if (currentTime.isAfter(targetTime)) {
-    // 如果当前时间已经晚于目标时间，则将目标时间设置为第二天的 6:30:00
-    targetTime = targetTime.add(1, 'day')
+  // 未开启超过预定时间后立刻执行功能时需要等到下一天的这个时候再执行
+  if (!runWhenExpireInitiateReserveTime) {
+    if (currentTime.isAfter(targetTime)) {
+      // 如果当前时间已经晚于目标时间，则将目标时间设置为第二天的 6:30:00
+      targetTime = targetTime.add(1, 'day')
+    }
   }
 
   const timeToWait = targetTime.diff(currentTime) // 计算需要等待的时间（毫秒）
