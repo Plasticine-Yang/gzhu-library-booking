@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 cached-cookie-value.json
+
+src/options.ts
